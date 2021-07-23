@@ -1,0 +1,66 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using projectPRN.Models;
+@model List<ExamSchedule>
+    <!doctype html>
+
+    @{
+
+    }
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Mainpage</title>
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <div class="container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th>Date</th>
+                        <th>Room No</th>
+                        <th>Time</th>
+                        <th>Exam Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int count = 1; }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row">@count</th>
+                            <td>@item.Course.SubjectId</td>
+                            <td>@item.Course.Subject.SubjectName</td>
+                            <td>@item.ExamDate.ToString("dd/MM/yyyy")</td>
+                            <td>@item.ExamRoom</td>
+                            <td>@item.ExamTime</td>
+                            <td>@item.ExamType</td>
+                        </tr>
+                        count++;
+                    }
+                </tbody>
+            </table>
+
+            <div>
+                <a class="btn btn-primary" href='@Url.Action("Mainpage", "Home")'>
+                    Return
+                </a>
+            </div>
+        </div>
+
+    </body>
