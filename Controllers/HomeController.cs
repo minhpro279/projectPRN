@@ -137,9 +137,7 @@ namespace projectPRN.Controllers
                 {
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
-                    ViewBag.subjectDetails = context.Subjects.ToList<Subject>();
-                    ViewBag.courseDetails = context.Courses.ToList<Course>();
-                    view.ViewData.Model = context.ExamSchedules.Include(x => x.Course).ToList<ExamSchedule>().FindAll(x => x.Course.StudentId.Equals(currentId));
+                    view.ViewData.Model = context.ExamSchedules.Include(x => x.Course.Subject).ToList<ExamSchedule>().FindAll(x => x.Course.StudentId.Equals(currentId));
                 }
                 else
                 {
@@ -150,14 +148,25 @@ namespace projectPRN.Controllers
             return view;
         }
 
-        public IActionResult GradeReport(int termID, string subjectID)
+        public IActionResult GradeReport(int termID, int courseID)
         {
             var view = View("Views/GradeReport.cshtml");
             if (HttpContext.Session.GetString("loginState") != null)
             {
                 if (HttpContext.Session.GetString("loginState").Equals(true.ToString()))
                 {
-
+                    FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
+                    string currentId = HttpContext.Session.GetString("currentId");
+                    ViewBag.terms = context.TermStudents.Include(x => x.Term).ToList().FindAll(x => x.StudentId.Equals(currentId));
+                    if(termID != 0)
+                    {
+                        ViewBag.tempTermID = termID;
+                        ViewBag.courses = context.Courses.Include(x => x.Subject).Include(x => x.Term).ToList().Where(x => x.StudentId.Equals(currentId) && x.TermId.Equals(termID));
+                        if(courseID != 0)
+                        {
+                            ViewBag.grade = context.Grades.ToList().FindAll(x => x.CourseId.Equals(courseID));
+                        }
+                    }
                 }
                 else { view = View("Views/InvalidRequest.cshtml"); }
             }
