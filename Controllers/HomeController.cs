@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using projectPRN.Models;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -17,49 +15,16 @@ namespace projectPRN.Controllers
         public IActionResult Login()
         {
             var view = View("Views/Login.cshtml");
+            if (HttpContext.Session.GetString("RegisterSuccess") != null)
+            {
+                ViewBag.success = true;
+            }
             return view;
         }
 
-        //public IActionResult Mainpage(string pass, string user)
-        //{
-        //    FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
-
-        //    if (HttpContext.Session.GetString("currentUsername") != null && HttpContext.Session.GetString("currentPassword") != null)
-        //    {
-        //        user = HttpContext.Session.GetString("currentUsername");
-        //        pass = HttpContext.Session.GetString("currentPassword");
-        //    }
-
-        //    List<Account> login = context.Accounts.ToList<Account>().FindAll(x => x.Username.Equals(user));
-        //    var view = View("Views/Login.cshtml");
-        //    if (login.Count < 1)
-        //    {
-        //        view = View("Views/LoginFailed.cshtml");
-        //    }
-        //    else
-        //    {
-        //        foreach (Account Account in login)
-        //        {
-        //            if (Account.Username.Equals(user) && Account.Password.Equals(pass))
-        //            {
-        //                HttpContext.Session.SetString("currentUsername", user);
-        //                HttpContext.Session.SetString("currentPassword", pass);
-        //                string currentId = context.Accounts.Where(x => x.Username.Equals(user)).First().StudentId;
-        //                HttpContext.Session.SetString("currentId", currentId);
-        //                view = (ViewResult)IndexPage(HttpContext);
-        //            }
-        //            else
-        //            {
-        //                view = View("Views/LoginFailed.cshtml");
-        //            }
-        //        }
-        //    }
-        //    return view;
-        //}
-
         public IActionResult indexPage()
         {
-            var view = (ViewResult)IndexPage(HttpContext);
+            var view = (ViewResult)Homepage(HttpContext);
             if (HttpContext.Session.GetString("loginState").Equals(false.ToString()))
             {
                 view = View("Views/Login.cshtml");
@@ -71,11 +36,11 @@ namespace projectPRN.Controllers
         {
             FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
 
-            if (HttpContext.Session.GetString("currentUsername") != null && HttpContext.Session.GetString("currentPassword") != null)
-            {
-                user = HttpContext.Session.GetString("currentUsername");
-                pass = HttpContext.Session.GetString("currentPassword");
-            }
+            //if (HttpContext.Session.GetString("currentUsername") != null && HttpContext.Session.GetString("currentPassword") != null)
+            //{
+            //    user = HttpContext.Session.GetString("currentUsername");
+            //    pass = HttpContext.Session.GetString("currentPassword");
+            //}
 
             List<Account> login = context.Accounts.ToList<Account>().FindAll(x => x.Username.Equals(user));
             if (login.Count < 1)
@@ -90,7 +55,7 @@ namespace projectPRN.Controllers
                     if (Account.Username.Equals(user) && Account.Password.Equals(pass))
                     {
                         HttpContext.Session.SetString("currentUsername", user);
-                        HttpContext.Session.SetString("currentPassword", pass);
+                        //HttpContext.Session.SetString("currentPassword", pass);
                         string currentId = context.Accounts.Where(x => x.Username.Equals(user)).First().StudentId;
                         HttpContext.Session.SetString("currentId", currentId);
                         HttpContext.Session.SetString("loginState", true.ToString());
@@ -105,7 +70,7 @@ namespace projectPRN.Controllers
             return indexPage();
         }
 
-        public IActionResult IndexPage(HttpContext hcontext)
+        public IActionResult Homepage(HttpContext hcontext)
         {
             var view = View("Views/Index.cshtml");
             ViewBag.currentUsername = getCurrentUsername(hcontext);
@@ -158,11 +123,11 @@ namespace projectPRN.Controllers
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
                     ViewBag.terms = context.TermStudents.Include(x => x.Term).ToList().FindAll(x => x.StudentId.Equals(currentId));
-                    if(termID != 0)
+                    if (termID != 0)
                     {
                         ViewBag.tempTermID = termID;
                         ViewBag.courses = context.Courses.Include(x => x.Subject).Include(x => x.Term).ToList().Where(x => x.StudentId.Equals(currentId) && x.TermId.Equals(termID));
-                        if(courseID != 0)
+                        if (courseID != 0)
                         {
                             ViewBag.grade = context.Grades.ToList().FindAll(x => x.CourseId.Equals(courseID));
                         }
@@ -171,6 +136,71 @@ namespace projectPRN.Controllers
                 else { view = View("Views/InvalidRequest.cshtml"); }
             }
             else { view = View("Views/InvalidRequest.cshtml"); }
+            return view;
+        }
+
+        public IActionResult Register()
+        {
+            var view = View("Views/Register.cshtml");
+            return view;
+        }
+
+        public IActionResult RegisterConfirm(string fullname, string username, string password, string major)
+        {
+            FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
+            List<Account> accounts = context.Accounts.ToList<Account>();
+
+            var view = View("Views/Register.cshtml");
+            if (fullname == null)
+            {
+                ViewBag.fullnameInvalid = true;
+            }
+            if (username == null)
+            {
+                ViewBag.usernameInvalid = true;
+            }
+            else
+            {
+                foreach (Account acc in accounts)
+                {
+                    if (acc.Username.Trim().Equals(username.Trim()))
+                    {
+                        ViewBag.duplicateUsername = true;
+                    }
+                }
+            }
+
+            if (password == null)
+            {
+                ViewBag.passwordInvalid = true;
+            }
+
+            if (major.Trim().Equals("0"))
+            {
+                ViewBag.majorInvalid = true;
+            }
+
+
+            if (ViewBag.fullnameInvalid != true && ViewBag.usernameInvalid != true && ViewBag.passwordInvalid != true
+                && ViewBag.duplicateUsername != true && ViewBag.majorInvalid != true)
+            {
+
+                StudentInfo student = new StudentInfo();
+                int newID = Convert.ToInt32(context.StudentInfos.Max(x => x.StudentId).Trim()) + 1;
+                student.StudentId = newID.ToString();
+                student.Major = major;
+                student.StudentName = fullname;
+                context.StudentInfos.Add(student);
+                Account account = new Account();
+                account.StudentId = student.StudentId;
+                account.Username = username.Trim();
+                account.Password = password.Trim();
+                context.Accounts.Add(account);
+                context.SaveChanges();
+                HttpContext.Session.SetString("RegisterSuccess", true.ToString());
+                view = (ViewResult)Login();
+            }
+
             return view;
         }
     }

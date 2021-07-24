@@ -4,57 +4,193 @@
 @{
 }
 
-<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <!------ Include the above in your HEAD tag ---------->
 
-<form class="form-horizontal" action='@Url.Action("RegisterConfirm","Home")' method="POST">
-    <fieldset>
-        <div id="legend">
-            <legend class="">Register</legend>
-        </div>
-        <div class="control-group">
-            <!-- Username -->
-            <label class="control-label" for="username">Username</label>
-            <div class="controls">
-                <input type="text" id="username" name="username" placeholder="" class="input-xlarge">
-                <p class="help-block">Username can contain any letters or numbers, without spaces</p>
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Fonts -->
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
+
+
+
+    <link rel="icon" href="Favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <title>Register</title>
+    <style>
+        import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
+
+
+body{
+    margin: 0;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #212529;
+    text-align: left;
+    background-color: #f5f8fa;
+}
+
+.navbar-laravel
+{
+    box-shadow: 0 2px 4px rgba(0,0,0,.04);
+}
+
+.navbar-brand , .nav-link, .my-form, .login-form
+{
+    font-family: Raleway, sans-serif;
+}
+
+.my-form
+{
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.my-form .row
+{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.login-form
+{
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.login-form .row
+{
+    margin-left: 0;
+    margin-right: 0;
+}
+    </style>
+    <script>
+        function validform() {
+
+            var a = document.forms["my-form"]["full-name"].value;
+            var b = document.forms["my-form"]["password"].value;
+            var c = document.forms["my-form"]["username"].value;
+            var d = document.forms["my-form"]["permanent-address"].value;
+
+            if (a == null || a == "") {
+                alert("Please Enter Your Full Name");
+                return false;
+            } else if (b == null || b == "") {
+                alert("Please Enter Your Password");
+                return false;
+            } else if (c == null || c == "") {
+                alert("Please Enter Your Username");
+                return false;
+            }
+        }
+    </script>
+</head>
+<body>
+    <main class="my-form">
+        <div class="cotainer">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">Register</div>
+                        <div class="card-body">
+                            <form name="my-form" onsubmit="return validform()" action="@Url.Action("RegisterConfirm", "Home")" method="post">
+                                <div class="form-group row">
+                                    <label for="full_name" class="col-md-4 col-form-label text-md-right">Full Name</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="full_name" class="form-control" name="fullname">
+                                    </div>
+                                </div>
+                                @if (ViewBag.fullnameInvalid == true)
+                                {
+                                    <div>
+                                        <p style="color:red; display:block; text-align:center">Full Name cannot be empty.</p>
+                                    </div>
+                                }
+
+                                <div class="form-group row">
+                                    <label for="user_name" class="col-md-4 col-form-label text-md-right">User Name</label>
+                                    <div class="col-md-6">
+                                        <input type="text" id="user_name" class="form-control" name="username">
+                                    </div>
+                                </div>
+
+                                @if (ViewBag.usernameInvalid == true)
+                                {
+                                    <div>
+                                        <p style="color:red; display:block; text-align:center">Username cannot be empty.</p>
+                                    </div>
+                                }
+
+                                @if (ViewBag.duplicateUsername == true)
+                                {
+                                    <div>
+                                        <p style="color:red; display:block; text-align:center">Username has already existed.</p>
+                                    </div>
+                                }
+
+                                <div class="form-group row">
+                                    <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
+                                    <div class="col-md-6">
+                                        <input type="password" id="password" class="form-control" name="password">
+                                    </div>
+                                </div>
+
+                                @if (ViewBag.passwordInvalid == true)
+                                {
+                                    <div>
+                                        <p style="color:red; display:block; text-align:center">Password cannot be empty.</p>
+                                    </div>
+                                }
+
+                                <div class="form-group row">
+                                    <label for="phone_number" class="col-md-4 col-form-label text-md-right">Major</label>
+                                    <div class="col-md-6">
+                                        <select name="major" class="custom-select">
+                                            <option value="0" selected>Select your major</option>
+                                            <option value="SE">Software Engineering</option>
+                                            <option value="EN">English</option>
+                                            <option value="MK">Marketing</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                @if (ViewBag.majorInvalid == true)
+                                {
+                                    <div>
+                                        <p style="color:red; display:block; text-align:center">Please choose a major.</p>
+                                    </div>
+                                }
+
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        Register
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
+        </div>
         </div>
 
-        <div class="control-group">
-            <!-- E-mail -->
-            <label class="control-label" for="email">E-mail</label>
-            <div class="controls">
-                <input type="text" id="email" name="email" placeholder="" class="input-xlarge">
-                <p class="help-block">Please provide your E-mail</p>
-            </div>
-        </div>
+    </main>
 
-        <div class="control-group">
-            <!-- Password-->
-            <label class="control-label" for="password">Password</label>
-            <div class="controls">
-                <input type="password" id="password" name="password" placeholder="" class="input-xlarge">
-                <p class="help-block">Password should be at least 4 characters</p>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <!-- Password -->
-            <label class="control-label" for="password_confirm">Password (Confirm)</label>
-            <div class="controls">
-                <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="input-xlarge">
-                <p class="help-block">Please confirm password</p>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <!-- Button -->
-            <div class="controls">
-                <button class="btn btn-success">Register</button>
-            </div>
-        </div>
-    </fieldset>
-</form>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</body>
+</html>

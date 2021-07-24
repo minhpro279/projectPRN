@@ -57,6 +57,14 @@
         @using (@Html.BeginForm("Mainpage", "Home", FormMethod.Post))
         {
             <h2 class="text-center">Log in</h2>
+
+            @if (ViewBag.success == true)
+            {
+                <div>
+                    <p style="color:green; display:block; text-align:center">Registration succeeded. Please login to continue</p>
+                </div>
+            }
+
             <div class="form-group">
                 <input name="user" type="text" class="form-control" placeholder="Username" required="required">
             </div>
@@ -73,6 +81,6 @@
                 </div>
             }
         }
-        <p class="text-center"><a href="#">Create an Account</a></p>
+        <p class="text-center"><a href="@Url.Action("Register", "Home")">Create an Account</a></p>
     </div>
 </body>
