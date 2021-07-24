@@ -172,12 +172,6 @@ namespace projectPRN.Models
                     .HasColumnType("decimal(4, 1)")
                     .HasColumnName("percentage");
 
-                entity.Property(e => e.StudentId)
-                    .IsRequired()
-                    .HasMaxLength(10)
-                    .HasColumnName("studentID")
-                    .IsFixedLength(true);
-
                 entity.Property(e => e.Value)
                     .HasColumnType("decimal(2, 1)")
                     .HasColumnName("value");
@@ -187,12 +181,6 @@ namespace projectPRN.Models
                     .HasForeignKey(d => d.CourseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Grade_Course");
-
-                entity.HasOne(d => d.Student)
-                    .WithMany(p => p.Grades)
-                    .HasForeignKey(d => d.StudentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Mark_Student Info");
             });
 
             modelBuilder.Entity<StudentInfo>(entity =>

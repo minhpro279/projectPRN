@@ -10,7 +10,6 @@ namespace projectPRN.Models
         public StudentInfo()
         {
             Courses = new HashSet<Course>();
-            Grades = new HashSet<Grade>();
         }
 
         public string StudentId { get; set; }
@@ -20,6 +19,5 @@ namespace projectPRN.Models
 
         public virtual Account Account { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
-        public virtual ICollection<Grade> Grades { get; set; }
     }
 }

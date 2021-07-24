@@ -197,6 +197,7 @@ namespace projectPRN.Controllers
                 student.StudentId = newID.ToString();
                 student.Major = major;
                 student.StudentName = fullname;
+                student.CurrentTerm = null;
                 context.StudentInfos.Add(student);
                 Account account = new Account();
                 account.StudentId = student.StudentId;
@@ -211,7 +212,7 @@ namespace projectPRN.Controllers
             return view;
         }
 
-        public IActionResult Profile()
+        public IActionResult Profile(string fullname, string username, string password, string major)
         {
             var view = View("Views/Profile.cshtml");
             return view;
