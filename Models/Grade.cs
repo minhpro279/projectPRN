@@ -12,7 +12,7 @@ namespace projectPRN.Models
         public string GradeCategory { get; set; }
         public int CourseId { get; set; }
         public string StudentId { get; set; }
-        public int Percentage { get; set; }
+        public decimal Percentage { get; set; }
         public decimal Value { get; set; }
         public string Comment { get; set; }
 

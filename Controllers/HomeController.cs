@@ -102,6 +102,7 @@ namespace projectPRN.Controllers
                 {
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
+                    ViewBag.currentUsername = getCurrentUsername(HttpContext);
                     view.ViewData.Model = context.ExamSchedules.Include(x => x.Course.Subject).ToList<ExamSchedule>().FindAll(x => x.Course.StudentId.Equals(currentId));
                 }
                 else
@@ -122,6 +123,7 @@ namespace projectPRN.Controllers
                 {
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
+                    ViewBag.currentUsername = getCurrentUsername(HttpContext);
                     ViewBag.terms = context.TermStudents.Include(x => x.Term).ToList().FindAll(x => x.StudentId.Equals(currentId));
                     if (termID != 0)
                     {
