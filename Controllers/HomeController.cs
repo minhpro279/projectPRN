@@ -102,8 +102,9 @@ namespace projectPRN.Controllers
                 {
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
+                    int? termID = context.StudentInfos.ToList().FindAll(x => x.StudentId.Equals(currentId)).First().CurrentTerm;
                     ViewBag.currentUsername = getCurrentUsername(HttpContext);
-                    view.ViewData.Model = context.ExamSchedules.Include(x => x.Course.Subject).ToList<ExamSchedule>().FindAll(x => x.Course.StudentId.Equals(currentId));
+                    view.ViewData.Model = context.ExamSchedules.Include(x => x.Course.Subject).ToList<ExamSchedule>().FindAll(x => x.Course.StudentId.Equals(currentId) && x.Course.TermId.Equals(termID));
                 }
                 else
                 {
@@ -191,7 +192,6 @@ namespace projectPRN.Controllers
             if (ViewBag.fullnameInvalid != true && ViewBag.usernameInvalid != true && ViewBag.passwordInvalid != true
                 && ViewBag.duplicateUsername != true && ViewBag.majorInvalid != true)
             {
-
                 StudentInfo student = new StudentInfo();
                 int newID = Convert.ToInt32(context.StudentInfos.Max(x => x.StudentId).Trim()) + 1;
                 student.StudentId = newID.ToString();
@@ -208,14 +208,56 @@ namespace projectPRN.Controllers
                 HttpContext.Session.SetString("RegisterSuccess", true.ToString());
                 view = (ViewResult)Login();
             }
+            return view;
+        }
+
+        public IActionResult Profile()
+        {
+            var view = View("Views/Profile.cshtml");
+            if (HttpContext.Session.GetString("loginState") != null)
+            {
+                if (HttpContext.Session.GetString("loginState").Equals(true.ToString()))
+                {
+                    FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
+                    string currentId = HttpContext.Session.GetString("currentId");
+                    ViewBag.currentUsername = getCurrentUsername(HttpContext);
+                    ViewBag.terms = context.Terms.ToList();
+                    //if (HttpContext.Session.GetString("UpdateSuccess").Equals(true.ToString()))
+                    //{
+                    //    ViewBag.UpdateSuccess = true;
+                    //}
+                    view.ViewData.Model = context.StudentInfos.Where(x => x.StudentId.Equals(currentId)).First();
+                }
+                else
+                {
+                    view = View("Views/InvalidRequest.cshtml");
+                }
+            }
+            else { view = View("Views/InvalidRequest.cshtml"); }
 
             return view;
         }
 
-        public IActionResult Profile(string fullname, string username, string password, string major)
+        public IActionResult ProfileUpdate(string fullname, string major, int? currentTerm)
         {
-            var view = View("Views/Profile.cshtml");
-            return view;
+            if (fullname == null)
+            {
+                ViewBag.fullnameInvalid = true;
+            }
+
+            if (ViewBag.fullnameInvalid != true)
+            {
+                string currentId = HttpContext.Session.GetString("currentId");
+                FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
+                StudentInfo info = context.StudentInfos.Where(x => x.StudentId.Equals(currentId)).First();
+                info.StudentName = fullname;
+                info.Major = major;
+                info.CurrentTerm = currentTerm;
+                context.SaveChanges();
+                ViewBag.UpdateSuccess = true;
+                //HttpContext.Session.SetString("UpdateSuccess", true.ToString());
+            }
+                return (ViewResult)Profile();
         }
     }
 }
