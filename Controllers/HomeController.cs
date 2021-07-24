@@ -72,7 +72,7 @@ namespace projectPRN.Controllers
 
         public IActionResult Homepage(HttpContext hcontext)
         {
-            var view = View("Views/Index.cshtml");
+            var view = View("Views/newIndex.cshtml");
             ViewBag.currentUsername = getCurrentUsername(hcontext);
             return view;
         }
@@ -201,6 +201,12 @@ namespace projectPRN.Controllers
                 view = (ViewResult)Login();
             }
 
+            return view;
+        }
+
+        public IActionResult Profile()
+        {
+            var view = View("Views/Profile.cshtml");
             return view;
         }
     }
