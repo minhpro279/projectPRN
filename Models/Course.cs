@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 #nullable disable
+
 namespace projectPRN.Models
 {
     public partial class Course

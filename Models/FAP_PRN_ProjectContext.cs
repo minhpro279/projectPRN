@@ -168,7 +168,9 @@ namespace projectPRN.Models
                     .HasColumnName("gradeType")
                     .IsFixedLength(true);
 
-                entity.Property(e => e.Percentage).HasColumnName("percentage");
+                entity.Property(e => e.Percentage)
+                    .HasColumnType("decimal(4, 1)")
+                    .HasColumnName("percentage");
 
                 entity.Property(e => e.StudentId)
                     .IsRequired()
@@ -204,6 +206,8 @@ namespace projectPRN.Models
                     .HasMaxLength(10)
                     .HasColumnName("studentID")
                     .IsFixedLength(true);
+
+                entity.Property(e => e.CurrentTerm).HasColumnName("currentTerm");
 
                 entity.Property(e => e.Major)
                     .IsRequired()

@@ -10,13 +10,58 @@
     List<Grade> fe = new List<Grade>();
     List<Grade> ex = new List<Grade>();
     List<Grade> ws = new List<Grade>();
-    int count = 0;
+    int count = 1;
     decimal total = 0;
     decimal avg = 0;
     decimal totalWeight = 0;
     int gradeCount = 0;
-    int labelCount = 0;
     decimal finalGrade = 0;
+    string url = ViewBag.currentURL;
+
+    Object createTable(List<Grade> list)
+    {
+        @if (list.Count != 0)
+        {
+            gradeCount = list.Count + 1;
+            @foreach (Grade grade in list)
+            {
+                total += grade.Value;
+                <tr>
+                    @if (count < 2)
+                    {
+                        <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center;">@grade.GradeCategory</td>
+                    }
+                    @if (list.Count == 1)
+                    {
+                        <td>@grade.GradeType</td>
+                    }
+                    else
+                    {
+                        <td>@grade.GradeType @count</td>
+                    }
+                    <td>@grade.Percentage.ToString("G29")%</td>
+                    <td>@grade.Value</td>
+                    <td>@grade.Comment</td>
+                </tr>
+                count++;
+                totalWeight += grade.Percentage;
+            }
+            avg = total / list.Count;
+            <tr>
+                <td>Total:</td>
+                <td>@Math.Round(totalWeight)%</td>
+                <td>@Math.Round(avg, 2)</td>
+                <td></td>
+            </tr>
+            finalGrade += avg * totalWeight / 100;
+            total = 0;
+            count = 1;
+            totalWeight = 0;
+            avg = 0;
+            gradeCount = 0;
+        }
+        return null;
+    }
 }
 
 <!DOCTYPE html>
@@ -229,148 +274,13 @@
                                                     ws.Add(grade);
                                                 }
                                             }
-
-                                            @if (ass.Count != 0)
-                                            {
-                                                gradeCount = ass.Count + 1;
-                                                @foreach (Grade gradeAS in ass)
-                                                {
-                                                    labelCount++;
-                                                    total += gradeAS.Value;
-                                                    <tr>
-                                                        @if (count < 1)
-                                                        {
-                                                            <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center;">@gradeAS.GradeCategory</td>
-                                                        }
-                                                        <td>@gradeAS.GradeType @labelCount</td>
-                                                        <td>@gradeAS.Percentage.ToString("G29")%</td>
-                                                        <td>@gradeAS.Value</td>
-                                                        <td>@gradeAS.Comment</td>
-                                                    </tr>
-                                                    count++;
-                                                    totalWeight += gradeAS.Percentage;
-                                                }
-                                                avg = total / ass.Count;
-                                                <tr>
-                                                    <td>Total:</td>
-                                                    <td>@Math.Round(totalWeight)%</td>
-                                                    <td>@Math.Round(avg, 2)</td>
-                                                    <td></td>
-                                                </tr>
-                                                finalGrade += avg * totalWeight / 100;
-                                                total = 0;
-                                                count = 0;
-                                                totalWeight = 0;
-                                                avg = 0;
-                                                gradeCount = 0;
-                                                labelCount = 0;
-                                            }
-
-                                            @if (pt.Count != 0)
-                                            {
-                                                gradeCount = pt.Count + 1;
-                                                @foreach (Grade gradePT in pt)
-                                                {
-                                                    labelCount++;
-                                                    total += gradePT.Value;
-                                                    <tr>
-                                                        @if (count < 1)
-                                                        {
-                                                            <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center;">@gradePT.GradeCategory</td>
-                                                        }
-                                                        <td>@gradePT.GradeType @labelCount</td>
-                                                        <td>@gradePT.Percentage.ToString("G29")%</td>
-                                                        <td>@gradePT.Value</td>
-                                                        <td>@gradePT.Comment</td>
-                                                    </tr>
-                                                    count++;
-                                                    totalWeight += gradePT.Percentage;
-                                                }
-                                                avg = total / pt.Count;
-                                                <tr>
-                                                    <td>Total:</td>
-                                                    <td>@Math.Round(totalWeight)%</td>
-                                                    <td>@Math.Round(avg, 2)</td>
-                                                    <td></td>
-                                                </tr>
-                                                finalGrade += avg * totalWeight / 100;
-                                                total = 0;
-                                                count = 0;
-                                                totalWeight = 0;
-                                                avg = 0;
-                                                gradeCount = 0;
-                                                labelCount = 0;
-                                            }
-
-                                            @if (pe.Count != 0)
-                                            {
-                                                gradeCount = pe.Count + 1;
-                                                @foreach (Grade gradePE in pe)
-                                                {
-                                                    total += gradePE.Value;
-                                                    <tr>
-                                                        @if (count < 1)
-                                                        {
-                                                            <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center;">@gradePE.GradeCategory</td>
-                                                        }
-                                                        <td>@gradePE.GradeType</td>
-                                                        <td>@gradePE.Percentage.ToString("G29")%</td>
-                                                        <td>@gradePE.Value</td>
-                                                        <td>@gradePE.Comment</td>
-                                                    </tr>
-                                                    count++;
-                                                    totalWeight += gradePE.Percentage;
-                                                }
-                                                avg = total / pe.Count;
-                                                <tr>
-                                                    <td>Total:</td>
-                                                    <td>@Math.Round(totalWeight)%</td>
-                                                    <td>@Math.Round(avg, 2)</td>
-                                                    <td></td>
-                                                </tr>
-                                                finalGrade += avg * totalWeight / 100;
-                                                total = 0;
-                                                count = 0;
-                                                totalWeight = 0;
-                                                avg = 0;
-                                                gradeCount = 0;
-                                                labelCount = 0;
-                                            }
-
-                                            @if (fe.Count != 0)
-                                            {
-                                                gradeCount = fe.Count + 1;
-                                                @foreach (Grade gradeFE in fe)
-                                                {
-                                                    total += gradeFE.Value;
-                                                    <tr>
-                                                        @if (count < 1)
-                                                        {
-                                                            <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center;">@gradeFE.GradeCategory</td>
-                                                        }
-                                                        <td>@gradeFE.GradeType</td>
-                                                        <td>@gradeFE.Percentage.ToString("G29")%</td>
-                                                        <td>@gradeFE.Value</td>
-                                                        <td>@gradeFE.Comment</td>
-                                                    </tr>
-                                                    count++;
-                                                    totalWeight += gradeFE.Percentage;
-                                                }
-                                                avg = total / fe.Count;
-                                                <tr>
-                                                    <td>Total:</td>
-                                                    <td>@Math.Round(totalWeight)%</td>
-                                                    <td>@Math.Round(avg, 2)</td>
-                                                    <td></td>
-                                                </tr>
-                                                finalGrade += avg * totalWeight / 100;
-                                                total = 0;
-                                                count = 0;
-                                                totalWeight = 0;
-                                                avg = 0;
-                                                gradeCount = 0;
-                                                labelCount = 0;
-                                            }
+                                            @createTable(ass)
+                                            @createTable(ex)
+                                            @createTable(pt)
+                                            @createTable(ws)
+                                            @createTable(pr)
+                                            @createTable(pe)
+                                            @createTable(fe)
                                         </tbody>
                                         <tfoot>
                                             <tr>
@@ -393,6 +303,11 @@
                                             </tr>
                                         </tfoot>
                                     </table>
+                                }
+                                else
+                                {
+                                    if(ViewBag.GradeError == true)
+                                    { <p style="color:red" class="text-center">Grade data unavailable.</p>}
                                 }
                             }
 

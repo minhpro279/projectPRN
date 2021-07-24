@@ -131,7 +131,12 @@ namespace projectPRN.Controllers
                         ViewBag.courses = context.Courses.Include(x => x.Subject).Include(x => x.Term).ToList().Where(x => x.StudentId.Equals(currentId) && x.TermId.Equals(termID));
                         if (courseID != 0)
                         {
-                            ViewBag.grade = context.Grades.ToList().FindAll(x => x.CourseId.Equals(courseID));
+                            List<Grade> list = context.Grades.ToList().FindAll(x => x.CourseId.Equals(courseID));
+                            if(list.Count < 1)
+                            {
+                                ViewBag.GradeError = true;
+                            }
+                            else { ViewBag.grade = list; }
                         }
                     }
                 }
