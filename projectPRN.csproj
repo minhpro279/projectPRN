@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="backupViews\ExamSchedule.cshtml" />
+    <Content Remove="backupViews\GradeReport.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -14,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="backupViews\" />
     <Folder Include="Style\" />
   </ItemGroup>
 

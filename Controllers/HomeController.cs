@@ -19,6 +19,13 @@ namespace projectPRN.Controllers
             {
                 ViewBag.success = true;
             }
+            if (HttpContext.Session.GetString("loginState") != null)
+            {
+                if (HttpContext.Session.GetString("loginState").Equals(true.ToString()))
+                {
+                    view = (ViewResult)indexPage();
+                }
+            }
             return view;
         }
 
@@ -103,8 +110,21 @@ namespace projectPRN.Controllers
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
                     int? termID = context.StudentInfos.ToList().FindAll(x => x.StudentId.Equals(currentId)).First().CurrentTerm;
+                    if (termID == null)
+                    {
+                        ViewBag.Unavailable = true;
+                    }
+                    else
+                    {
+                        ViewBag.currentTerm = context.Terms.ToList().Where(x => x.TermId.Equals(termID)).First().TermName;
+                    }
                     ViewBag.currentUsername = getCurrentUsername(HttpContext);
-                    view.ViewData.Model = context.ExamSchedules.Include(x => x.Course.Subject).ToList<ExamSchedule>().FindAll(x => x.Course.StudentId.Equals(currentId) && x.Course.TermId.Equals(termID));
+                    List<ExamSchedule> schedules = context.ExamSchedules.Include(x => x.Course.Subject).ToList<ExamSchedule>().FindAll(x => x.Course.StudentId.Equals(currentId) && x.Course.TermId.Equals(termID));
+                    if (schedules.Count < 1)
+                    {
+                        ViewBag.NoExam = true;
+                    }
+                    view.ViewData.Model = schedules;
                 }
                 else
                 {
@@ -125,15 +145,28 @@ namespace projectPRN.Controllers
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
                     ViewBag.currentUsername = getCurrentUsername(HttpContext);
-                    ViewBag.terms = context.TermStudents.Include(x => x.Term).ToList().FindAll(x => x.StudentId.Equals(currentId));
+                    ViewBag.studentName = context.StudentInfos.ToList().Find(x => x.StudentId.Equals(currentId)).StudentName;
+                    string studentCode = context.StudentInfos.ToList().Find(x => x.StudentId.Equals(currentId)).Major.ToString().Trim() + currentId.Trim().PadLeft(6, '0');
+                    ViewBag.studentCode = studentCode;
+                    List<TermStudent> terms = context.TermStudents.Include(x => x.Term).ToList().FindAll(x => x.StudentId.Equals(currentId));
+                    if (terms.Count < 1)
+                    {
+                        ViewBag.TermError = true;
+                    }
+                    else { ViewBag.terms = terms; }
                     if (termID != 0)
                     {
                         ViewBag.tempTermID = termID;
-                        ViewBag.courses = context.Courses.Include(x => x.Subject).Include(x => x.Term).ToList().Where(x => x.StudentId.Equals(currentId) && x.TermId.Equals(termID));
+                        List<Course> courses = context.Courses.Include(x => x.Subject).Include(x => x.Term).ToList().FindAll(x => x.StudentId.Equals(currentId) && x.TermId.Equals(termID));
+                        if (courses.Count < 1)
+                        {
+                            ViewBag.CourseError = true;
+                        }
+                        else { ViewBag.courses = courses; }
                         if (courseID != 0)
                         {
                             List<Grade> list = context.Grades.ToList().FindAll(x => x.CourseId.Equals(courseID));
-                            if(list.Count < 1)
+                            if (list.Count < 1)
                             {
                                 ViewBag.GradeError = true;
                             }
@@ -221,7 +254,7 @@ namespace projectPRN.Controllers
                     FAP_PRN_ProjectContext context = new FAP_PRN_ProjectContext();
                     string currentId = HttpContext.Session.GetString("currentId");
                     ViewBag.currentUsername = getCurrentUsername(HttpContext);
-                    ViewBag.terms = context.Terms.ToList();
+                    ViewBag.terms = context.TermStudents.Include(x => x.Term).ToList().FindAll(x => x.StudentId.Equals(currentId));
                     //if (HttpContext.Session.GetString("UpdateSuccess").Equals(true.ToString()))
                     //{
                     //    ViewBag.UpdateSuccess = true;
@@ -257,7 +290,7 @@ namespace projectPRN.Controllers
                 ViewBag.UpdateSuccess = true;
                 //HttpContext.Session.SetString("UpdateSuccess", true.ToString());
             }
-                return (ViewResult)Profile();
+            return (ViewResult)Profile();
         }
     }
 }

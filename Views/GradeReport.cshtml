@@ -8,7 +8,7 @@
     List<Grade> ass = new List<Grade>();
     List<Grade> pr = new List<Grade>();
     List<Grade> fe = new List<Grade>();
-    List<Grade> ex = new List<Grade>();
+    List<Grade> ex = new List<Grade>(); 
     List<Grade> ws = new List<Grade>();
     int count = 1;
     decimal total = 0;
@@ -16,7 +16,6 @@
     decimal totalWeight = 0;
     int gradeCount = 0;
     decimal finalGrade = 0;
-    string url = ViewBag.currentURL;
 
     Object createTable(List<Grade> list)
     {
@@ -29,7 +28,7 @@
                 <tr>
                     @if (count < 2)
                     {
-                        <td rowspan="@gradeCount" >@grade.GradeCategory</td>
+                        <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center; background-color:lightgrey">@grade.GradeCategory</td>
                     }
                     @if (list.Count == 1)
                     {
@@ -184,133 +183,145 @@
                 <!-- End of Topbar -->
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
+                    <h1 class="h3 mb-4 text-gray-800 text-center">Grade Report for @ViewBag.studentName (@ViewBag.studentCode)</h1>
                     <div class="col-md-12">
                         @using (@Html.BeginForm("GradeReport", "Home", FormMethod.Post))
                         {
-                            <table class="table" style="float: left;">
-                                <thead>
-                                    <tr>
-                                        <th>Term</th>
-                                    </tr>
-                                </thead>
-
-                                <tbody>
-                                    @foreach (TermStudent termItem in ViewBag.terms)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <a href="/Home/GradeReport?termID=@termItem.TermId">@termItem.Term.TermName</a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                            @if (ViewBag.courses != null)
+                            @if (ViewBag.terms != null)
                             {
-                                <table class="table" style="float: right;">
-                                    <tr>
-                                        <th>Subject</th>
-                                    </tr>
+                                <table class="table" style="float: left;">
+                                    <thead>
+                                        <tr>
+                                            <th>Term</th>
+                                        </tr>
+                                    </thead>
+
                                     <tbody>
-                                        @foreach (Course course in ViewBag.courses)
+                                        @foreach (TermStudent termItem in ViewBag.terms)
                                         {
                                             <tr>
                                                 <td>
-                                                    <a href="/Home/GradeReport?termID=@ViewBag.tempTermID&courseID=@course.CourseId">@course.Subject.SubjectName</a>
+                                                    <a href="/Home/GradeReport?termID=@termItem.TermId">@termItem.Term.TermName</a>
                                                 </td>
                                             </tr>
                                         }
                                     </tbody>
                                 </table>
-                                if (ViewBag.grade != null)
+                                @if (ViewBag.courses != null)
                                 {
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Grade Category</th>
-                                                <th>Grade Type</th>
-                                                <th>Percentage</th>
-                                                <th>Value</th>
-                                                <th>Comment</th>
-                                            </tr>
-                                        </thead>
+                                    <table class="table" style="float: right;">
+                                        <tr>
+                                            <th>Courses</th>
+                                        </tr>
                                         <tbody>
-
-                                            @foreach (Grade grade in ViewBag.grade)
+                                            @foreach (Course course in ViewBag.courses)
                                             {
-                                                if (grade.GradeType.Trim().Equals("PE"))
-                                                {
-                                                    pe.Add(grade);
-                                                }
-
-                                                if (grade.GradeType.Trim().Equals("AS"))
-                                                {
-                                                    ass.Add(grade);
-                                                }
-
-                                                if (grade.GradeType.Trim().Equals("PT"))
-                                                {
-                                                    pt.Add(grade);
-                                                }
-
-                                                if (grade.GradeType.Trim().Equals("PR"))
-                                                {
-                                                    pr.Add(grade);
-                                                }
-
-                                                if (grade.GradeType.Trim().Equals("FE"))
-                                                {
-                                                    fe.Add(grade);
-                                                }
-
-                                                if (grade.GradeType.Trim().Equals("EX"))
-                                                {
-                                                    ex.Add(grade);
-                                                }
-
-                                                if (grade.GradeType.Trim().Equals("WS"))
-                                                {
-                                                    ws.Add(grade);
-                                                }
+                                                <tr>
+                                                    <td>
+                                                        <a href="/Home/GradeReport?termID=@ViewBag.tempTermID&courseID=@course.CourseId">@course.Subject.SubjectName</a>
+                                                    </td>
+                                                </tr>
                                             }
-                                            @createTable(ass)
-                                            @createTable(ex)
-                                            @createTable(pt)
-                                            @createTable(ws)
-                                            @createTable(pr)
-                                            @createTable(pe)
-                                            @createTable(fe)
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td rowspan="2" style="vertical-align : middle;text-align:center;">COURSE TOTAL</td>
-                                                <td>AVERAGE</td>
-                                                <td colspan="3">@Math.Round(finalGrade, 1)</td>
-                                            </tr>
-                                            <tr>
-                                                <td>STATUS</td>
-                                                <td colspan="3">
-                                                    @if (finalGrade < 5)
-                                                    {
-                                                        <b style="color:red;">NOT PASSED</b>
-                                                    }
-                                                    else
-                                                    {
-                                                        <b style="color:green">PASSED</b>
-                                                    }
-                                                </td>
-                                            </tr>
-                                        </tfoot>
                                     </table>
+                                    if (ViewBag.grade != null)
+                                    {
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Grade Category</th>
+                                                    <th>Grade Type</th>
+                                                    <th>Percentage</th>
+                                                    <th>Value</th>
+                                                    <th>Comment</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                                @foreach (Grade grade in ViewBag.grade)
+                                                {
+                                                    if (grade.GradeType.Trim().Equals("PE"))
+                                                    {
+                                                        pe.Add(grade);
+                                                    }
+
+                                                    if (grade.GradeType.Trim().Equals("AS"))
+                                                    {
+                                                        ass.Add(grade);
+                                                    }
+
+                                                    if (grade.GradeType.Trim().Equals("PT"))
+                                                    {
+                                                        pt.Add(grade);
+                                                    }
+
+                                                    if (grade.GradeType.Trim().Equals("PR"))
+                                                    {
+                                                        pr.Add(grade);
+                                                    }
+
+                                                    if (grade.GradeType.Trim().Equals("FE"))
+                                                    {
+                                                        fe.Add(grade);
+                                                    }
+
+                                                    if (grade.GradeType.Trim().Equals("EX"))
+                                                    {
+                                                        ex.Add(grade);
+                                                    }
+
+                                                    if (grade.GradeType.Trim().Equals("WS"))
+                                                    {
+                                                        ws.Add(grade);
+                                                    }
+                                                }
+                                                @createTable(ass)
+                                                @createTable(ex)
+                                                @createTable(pt)
+                                                @createTable(ws)
+                                                @createTable(pr)
+                                                @createTable(pe)
+                                                @createTable(fe)
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td rowspan="2" style="vertical-align: middle; text-align: center; background-color: lightgrey">COURSE TOTAL</td>
+                                                    <td>AVERAGE</td>
+                                                    <td colspan="3">@Math.Round(finalGrade, 1)</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>STATUS</td>
+                                                    <td colspan="3">
+                                                        @if (finalGrade < 5)
+                                                        {
+                                                            <b style="color:red;">NOT PASSED</b>
+                                                        }
+                                                        else
+                                                        {
+                                                            <b style="color:green">PASSED</b>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        if (ViewBag.GradeError == true)
+                                        { <p style="color:red" class="text-center">Grade data unavailable.</p>}
+                                    }
                                 }
                                 else
                                 {
-                                    if(ViewBag.GradeError == true)
-                                    { <p style="color:red" class="text-center">Grade data unavailable.</p>}
+                                    if (ViewBag.CourseError == true)
+                                    { <p style="color:red" class="text-center">Courses data unavailable.</p>}
                                 }
                             }
-
+                            else
+                            {
+                                if (ViewBag.TermError == true)
+                                { <p style="color:red" class="text-center">Terms data unavailable.</p>}
+                            }
                         }
                     </div>
                 </div>

@@ -192,15 +192,16 @@
                                     <label for="currentTerm" class="col-md-4 col-form-label text-md-right">Current Term</label>
                                     <div class="col-md-6">
                                         <select name="currentTerm" class="custom-select">
-                                            @foreach (Term term in ViewBag.terms)
+                                            @foreach (TermStudent term in ViewBag.terms)
                                             {
+
                                                 if (Model.CurrentTerm.Equals(term.TermId))
                                                 {
-                                                    <option value="@term.TermId" selected>@term.TermName</option>
+                                                    <option value="@term.TermId" selected>@term.Term.TermName</option>
                                                 }
                                                 else
                                                 {
-                                                    <option value="@term.TermId">@term.TermName</option>
+                                                    <option value="@term.TermId">@term.Term.TermName</option>
                                                 }
                                             }
                                         </select>

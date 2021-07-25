@@ -129,36 +129,53 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <div class="card-body">
-                        <!-- Page Heading -->
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Subject Code</th>
-                                    <th>Subject Name</th>
-                                    <th>Date</th>
-                                    <th>Room No</th>
-                                    <th>Time</th>
-                                    <th>Exam Type</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @{int count = 1; }
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <th scope="row">@count</th>
-                                        <td>@item.Course.SubjectId</td>
-                                        <td>@item.Course.Subject.SubjectName</td>
-                                        <td>@item.ExamDate.ToString("dd/MM/yyyy")</td>
-                                        <td>@item.ExamRoom</td>
-                                        <td>@item.ExamTime</td>
-                                        <td>@item.ExamType</td>
-                                    </tr>
-                                    count++;
-                                }
-                            </tbody>
-                        </table>
+                        @if (ViewBag.Unavailable == true)
+                        {
+                            <p style="color:red; display:block; text-align:center">Exam Schedule data unavailable.</p>
+                        }
+                        else
+                        {
+                            <h1 class="h3 mb-4 text-gray-800 text-center">Exam Schedule for @ViewBag.currentTerm</h1>
+                            <!-- Page Heading -->
+                            if (ViewBag.NoExam == true)
+                            {
+                                <p style="color:red; display:block; text-align:center">There is no upcoming exam. Let's gooooooooo.</p>
+                            }
+                            else
+                            {
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Subject Code</th>
+                                            <th>Subject Name</th>
+                                            <th>Date</th>
+                                            <th>Room No</th>
+                                            <th>Time</th>
+                                            <th>Exam Type</th>
+                                            <th>Publish Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{int count = 1; }
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <th scope="row">@count</th>
+                                                <td>@item.Course.SubjectId</td>
+                                                <td>@item.Course.Subject.SubjectName</td>
+                                                <td>@item.ExamDate.ToString("dd/MM/yyyy")</td>
+                                                <td>@item.ExamRoom</td>
+                                                <td>@item.ExamTime</td>
+                                                <td>@item.ExamType</td>
+                                                <td>@item.PublishDate.ToString("dd/MM/yyyy")</td>
+                                            </tr>
+                                            count++;
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        }
                     </div>
                 </div>
                 <!-- /.container-fluid -->
