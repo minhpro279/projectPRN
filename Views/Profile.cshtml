@@ -133,11 +133,9 @@
                             <form name="my-form" action="@Url.Action("ProfileUpdate", "Home")" method="post">
                                 @if (ViewBag.UpdateSuccess == true)
                                 {
-                                    <div class="form-group row">
-                                        <div class="col-md-6">
-                                            <p style="color:green; display:block; text-align:center">Profile updated successfully.</p>
-                                        </div>
-                                    </div>
+
+                                    <p style="color:green; display:block; text-align:center">Profile updated successfully.</p>
+
                                 }
 
                                 <div class="form-group row">
@@ -152,6 +150,9 @@
                                         <p style="color:red; display:block; text-align:center">Full Name cannot be empty.</p>
                                     </div>
                                 }
+
+                                <p style="color:black; display:block; text-align:center; font-size:20px">Functions below are intended for showcase only.</p>
+
 
                                 <div class="form-group row">
                                     <label for="major" class="col-md-4 col-form-label text-md-right">Major</label>

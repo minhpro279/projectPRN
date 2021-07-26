@@ -16,6 +16,7 @@
     decimal totalWeight = 0;
     int gradeCount = 0;
     decimal finalGrade = 0;
+    bool incomplete = false;
 
     Object createTable(List<Grade> list)
     {
@@ -25,33 +26,50 @@
             @foreach (Grade grade in list)
             {
                 total += grade.Value;
-                <tr>
-                    @if (count < 2)
-                    {
-                        <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center; background-color:lightgrey">@grade.GradeCategory</td>
-                    }
-                    @if (list.Count == 1)
-                    {
-                        <td>@grade.GradeType</td>
-                    }
-                    else
-                    {
-                        <td>@grade.GradeType @count</td>
-                    }
-                    <td>@grade.Percentage.ToString("G29")%</td>
-                    <td>@grade.Value</td>
-                    <td>@grade.Comment</td>
-                </tr>
+<tr>
+    @if (count < 2)
+    {
+        <td rowspan="@gradeCount" style="vertical-align : middle;text-align:center; background-color:lightgrey">@grade.GradeCategory</td>
+    }
+    @if (list.Count == 1)
+    {
+        <td>@grade.GradeType</td>
+    }
+    else
+    {
+        <td>@grade.GradeType @count</td>
+    }
+    <td>@grade.Percentage.ToString("G29")%</td>
+    @if (@grade.Value.Equals(-1))
+    {
+        <td> </td>
+        incomplete = true;
+    }
+    else
+    {
+        <td>@grade.Value</td>
+    }
+
+    <td>@grade.Comment</td>
+</tr>
                 count++;
                 totalWeight += grade.Percentage;
             }
             avg = total / list.Count;
-            <tr>
-                <td>Total:</td>
-                <td>@Math.Round(totalWeight)%</td>
-                <td>@Math.Round(avg, 2)</td>
-                <td></td>
-            </tr>
+<tr>
+    <td>Total:</td>
+    <td>@Math.Round(totalWeight)%</td>
+    @if (!incomplete)
+    {
+        <td>@Math.Round(avg, 2)</td>
+    }
+    else
+    {
+        <td> </td>
+    }
+
+    <td></td>
+</tr>
             finalGrade += avg * totalWeight / 100;
             total = 0;
             count = 1;
@@ -287,7 +305,15 @@
                                                 <tr>
                                                     <td rowspan="2" style="vertical-align: middle; text-align: center; background-color: lightgrey">COURSE TOTAL</td>
                                                     <td>AVERAGE</td>
-                                                    <td colspan="3">@Math.Round(finalGrade, 1)</td>
+                                                    @if (!incomplete)
+                                                    {
+                                                        <td colspan="3">@Math.Round(finalGrade, 1)</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        finalGrade = 0;
+                                                        <td colspan="3">@Math.Round(finalGrade, 1)</td>
+                                                    }
                                                 </tr>
                                                 <tr>
                                                     <td>STATUS</td>

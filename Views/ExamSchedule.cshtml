@@ -160,16 +160,25 @@
                                         @{int count = 1; }
                                         @foreach (var item in Model)
                                         {
-                                            <tr>
-                                                <th scope="row">@count</th>
-                                                <td>@item.Course.SubjectId</td>
-                                                <td>@item.Course.Subject.SubjectName</td>
-                                                <td>@item.ExamDate.ToString("dd/MM/yyyy")</td>
+                                        <tr>
+                                            <th scope="row">@count</th>
+                                            <td>@item.Course.SubjectId</td>
+                                            <td>@item.Course.Subject.SubjectName</td>
+                                            <td>@item.ExamDate.ToString("dd/MM/yyyy")</td>
+                                            @if (@item.ExamRoom.Trim().Equals("Online"))
+                                            {
+                                                <td>
+                                                    <a href="https://meet.google.com/kky-qfjt-czj?pli=1&authuser=1">@item.ExamRoom</a>
+                                                </td>
+                                            }
+                                            else
+                                            {
                                                 <td>@item.ExamRoom</td>
-                                                <td>@item.ExamTime</td>
-                                                <td>@item.ExamType</td>
-                                                <td>@item.PublishDate.ToString("dd/MM/yyyy")</td>
-                                            </tr>
+                                            }
+                                            <td>@item.ExamTime</td>
+                                            <td>@item.ExamType</td>
+                                            <td>@item.PublishDate.ToString("dd/MM/yyyy")</td>
+                                        </tr>
                                             count++;
                                         }
                                     </tbody>
